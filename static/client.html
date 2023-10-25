@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Notice Board</title>
+</head>
+<body>
+    <h1>Messages</h1>
+    <div id="notice-board">
+        <ul style="background-color: antiquewhite;" id="notices"></ul>
+    </div>
+    <div id="admin-controls">
+        <form id="admin-form">
+            <!-- <input type="text" id="message" autocomplete="off" required/>
+            <button type="submit">Post Notice</button> -->
+        </form>
+    </div>
+    <script>
+        const socket = new WebSocket("ws://" + window.location.host + "/ws");
+        const notices = document.getElementById("notices");
+        const adminForm = document.getElementById("admin-form");
+        const messageInput = document.getElementById("message");
+
+        socket.onmessage = (event) => {
+            const li = document.createElement("li");
+            li.textContent = event.data;
+            notices.appendChild(li);
+        };
+
+        adminForm.onsubmit = (e) => {
+            e.preventDefault();
+            const message = messageInput.value;
+            socket.send(message);
+            messageInput.value = "";
+        };
+    </script>
+</body>
+</html>
